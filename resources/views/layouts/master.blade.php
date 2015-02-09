@@ -4,8 +4,9 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <!-- Latest compiled and minified CSS -->
+        <!-- Latest compiled and minified CSS 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+        -->
 
         <!-- Optional theme -->
         <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
@@ -23,12 +24,13 @@
         -->
  
         <script src="{{ asset('/assets/js/plupload.full.min.js') }}"></script>
+        <script src="{{ asset('/assets/js/bootstrap.min.js') }}"></script>
 
-        <!-- Latest compiled and minified JavaScript -->
+        <!-- Latest compiled and minified JavaScript 
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script> 
-        <!--
         <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.13/d3.min.js"></script>
         -->
+
         <link rel="stylesheet" href="{{ asset('assets/font-awesome-4.1.0/css/font-awesome.min.css') }}">
     </head>
     <body>
