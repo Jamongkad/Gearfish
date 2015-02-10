@@ -18,7 +18,7 @@ class AuthController extends Controller {
 	|
 	*/
 
-	use AuthenticatesAndRegistersUsers;
+	//use AuthenticatesAndRegistersUsers;
 
 	/**
 	 * Create a new authentication controller instance.
@@ -33,6 +33,12 @@ class AuthController extends Controller {
 		$this->registrar = $registrar;
 
 		$this->middleware('guest', ['except' => 'getLogout']);
+	}
+    
+	public function getLogin()
+	{
+        var_dump("Shit!");
+		return view('auth.login');
 	}
 
 }

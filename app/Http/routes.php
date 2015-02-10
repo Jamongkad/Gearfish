@@ -50,12 +50,12 @@ Route::get('/docs', function()
 	return View::make('docs');
 });
 
-Route::get('/myapi', function()
+Route::get('/myapi', ['middleware' => 'auth', function()
 {	
     $companyID = 1;
     $csv = DB::table('Uploads')->where('companyID', '=', $companyID)->get();
 	return View::make('myapi', ['csv' => $csv]);
-});
+}]);
 
 Route::get('/upload', function()
 {	
