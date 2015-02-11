@@ -52,13 +52,6 @@
         alert(file.message);
     })
     
-    /*
-    uploader.bind('FileFiltered', function(up, file) {
-        console.log(up);
-        console.log(file);
-    });
-    */
-
     uploader.bind('FilesAdded', function(up, file) {
         $('#file_name').text("CSV File: " + file[0].name);
     });
@@ -70,14 +63,15 @@
     });
 
     uploader.bind('UploadComplete', function(up, file) {
+
         var file = file;
-        
+ 
         $('.progress-bar').fadeOut(2000, function() {
             var filename = file[0].name;
 
             $(this).hide().removeAttr('style').text('');
             $('#file_name').text(file[0].name + " successfully uploaded!").fadeOut(2000);
-            window.location = '/myapi';     
+            window.location = '/upload_success';     
             /*
             $.ajax({
                 type: "POST",

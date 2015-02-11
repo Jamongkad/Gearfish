@@ -2,10 +2,6 @@
 @section("content")
 <script>
 $(function() {
-    $('.api-key, .api-key-id').text($('select[name]').val());
-    $('select[name]').change(function() { 
-        $('.api-key, .api-key-id').text($(this).val());
-    })
 });
 </script>
 <div class="row"> 
@@ -43,15 +39,12 @@ $(function() {
         </div>
 
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-12">
                 <h3>API Key</h3>
                 <div>
-
-                    <pre style="color:#c7254e"><code class="api-key ng-binding"><?php echo $upload_data->key?></code></pre>
+                    <pre style="color:#c7254e"><code class="api-key"><?php echo $upload_data->key?></code></pre>
                 </div>
-            </div>
-            <div class="col-md-8">
-                <h3>Code Samples</h3>
+                <h3>Code Sample</h3>
                 <pre><code>curl --include --request GET "https://www.gearfish.com/api/<?php echo $upload_data->companyID?>?page=0&apikey=<span class="api-key-id"><?php echo $upload_data->key?></span>"</code></pre>
             </div>
         </div>

@@ -1,5 +1,7 @@
 <?php namespace App\Http\Controllers\Auth;
 
+use Auth;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\Registrar;
@@ -18,7 +20,7 @@ class AuthController extends Controller {
 	|
 	*/
 
-	//use AuthenticatesAndRegistersUsers;
+	use AuthenticatesAndRegistersUsers;
 
 	/**
 	 * Create a new authentication controller instance.
@@ -40,5 +42,13 @@ class AuthController extends Controller {
         var_dump("Shit!");
 		return view('auth.login');
 	}
+
+    public function postAuthenticate(Request $request)
+    {
+        if (Auth::attempt($request->only('email', 'password')))
+        {
+            return redirect()->intended('/getstarted');
+        }
+    }
 
 }
