@@ -20,7 +20,7 @@ use Illuminate\Pagination\Paginator;
 
 Route::get('/', function()
 { 
-	return View::make('getstarted');
+	return View::make('homepage');
 });
 
 Route::get('/getstarted', ['middleware' => 'auth', function()
