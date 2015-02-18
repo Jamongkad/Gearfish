@@ -20,7 +20,7 @@ class UploadsTable extends Migration {
             $table->integer('companyID')->unsigned();
             $table->string('name', 250);
             $table->integer('records');
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            //$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 		});
 	}
