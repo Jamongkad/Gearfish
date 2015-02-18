@@ -39,65 +39,80 @@
                 <div class="navbar-header">
                     <a class="navbar-brand" href="<?php echo (Auth::check()) ? '/getstarted' : '/'?>">Gearfish</a>
                 </div>
+                <div id="navbar-main" class="navbar-collapse collapse">
                 <?php if(Auth::check()) : ?>
-                    <div id="navbar-main" class="navbar-collapse collapse">
-                        <ul class="nav navbar-nav">
-                            <li>
-                                <a href="/getstarted">
-                                    <i class="fa fa-reorder"></i>
-                                    Get Started
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/apikey"> 
-                                    <i class="fa fa-dot-circle-o"></i>
-                                    API Keys
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/usage">
-                                    <i class="fa fa-ioxhost"></i>
-                                    Usage
-                                </a>
-                            </li>
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="/getstarted">
+                                <i class="fa fa-reorder"></i>
+                                Get Started
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/apikey"> 
+                                <i class="fa fa-dot-circle-o"></i>
+                                API Keys
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/usage">
+                                <i class="fa fa-ioxhost"></i>
+                                Usage
+                            </a>
+                        </li>
 
-                            <li> 
-                                <a href="/billing">
-                                    <i class="fa fa-usd"></i>
-                                    Billing
-                                </a>
-                            </li>
-                            <li> 
-                                <a href="/myapi">
-                                    <i class="fa fa-cloud-upload"></i>
-                                    My API's
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/docs">
-                                    <i class="fa fa-book"></i>
-                                    Documentation
-                                </a>
-                            </li>
-                        </ul>
+                        <li> 
+                            <a href="/billing">
+                                <i class="fa fa-usd"></i>
+                                Billing
+                            </a>
+                        </li>
+                        <li> 
+                            <a href="/myapi">
+                                <i class="fa fa-cloud-upload"></i>
+                                My API's
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/docs">
+                                <i class="fa fa-book"></i>
+                                Documentation
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a target="_blank" href="http://builtwithbootstrap.com/"> 
+                                <i class="fa fa-gear"></i>
+                                Settings
+                            </a>
+                        </li>
+                                
+                        <li>
+                            <a href="/auth/logout">
+                                <i class="fa fa-power-off"></i>
+                                Logout
+                            </a>
+                        </li>
+                    </ul> 
+                <?php else: ?>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="/auth/login"> 
+                                Login
+                            </a>
+                        </li>
+                                
+                        <li>
+                            <a href="/auth/register">
+                                Register
+                            </a>
+                        </li>
+                    </ul> 
 
-                        <ul class="nav navbar-nav navbar-right">
-                            <li>
-                                <a target="_blank" href="http://builtwithbootstrap.com/"> 
-                                    <i class="fa fa-gear"></i>
-                                    Settings
-                                </a>
-                            </li>
-                                    
-                            <li>
-                                <a href="/auth/logout">
-                                    <i class="fa fa-power-off"></i>
-                                    Logout
-                                </a>
-                            </li>
-                        </ul> 
-                    </div>
                 <?php endif; ?>
+                </div>
+
             </div>
         </div>
         <div class="container">

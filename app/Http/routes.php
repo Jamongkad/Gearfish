@@ -30,8 +30,7 @@ Route::get('/getstarted', ['middleware' => 'auth', function()
 
 Route::get('/apikey', ['middleware' => 'auth', function()
 {	
-    $companyID = 1;
-    $keys = DB::Table('CompanyApiKeys')->where('companyID', '=', $companyID)->get();
+    $keys = DB::Table('CompanyApiKeys')->where('companyID', '=', Auth::user()->id)->get();
 	return View::make('apikey', ['keys' => $keys]);
 }]);
 
@@ -52,8 +51,7 @@ Route::get('/docs', ['middleware' => 'auth', function()
 
 Route::get('/myapi', ['middleware' => 'auth', function()
 {	
-    $companyID = 1;
-    $csv = DB::table('Uploads')->where('companyID', '=', $companyID)->get();
+    $csv = DB::table('Uploads')->where('companyID', '=', Auth::user()->id)->get();
 	return View::make('myapi', ['csv' => $csv]);
 }]);
 
@@ -70,7 +68,7 @@ Route::get('/upload_success', ['middleware' => 'auth', function()
 Route::post('/plupload', function() {
     return Plupload::receive('file', function ($file) {
 
-        $companyID = 1;
+        $companyID = Auth::user()->id;
 
         $extension = $file->getClientOriginalExtension(); // getting csv extension
         $fileName = rand(11111,99999).'.'.$extension; // renameing csv
@@ -103,12 +101,12 @@ Route::post('/createkey', function()
 
 Route::get('/viewapi/{id}', ['middleware' => 'auth', function($id)
 {
-    $companyID = 1;
+    $companyID = Auth::user()->id;
     $upload_data = DB::table('Uploads')->join('CompanyApiKeys', 'Uploads.id', '=', 'CompanyApiKeys.uploadID')
                                        ->where('Uploads.companyID', '=', $companyID)
                                        ->where('Uploads.id', '=', $id)
-                                       ->first();
-    
+                                       ->first();    
+
     return View::make('viewapi', ['upload_data' => $upload_data]);
 }]);
 
@@ -154,8 +152,8 @@ Route::get('/api/{id}', function($id)
         'data' => array_slice($collection, $offset, $limit)//$paginator->paginate($limit)->toArray()['data']
     ];
     
-    var_dump($page_data);
-    //return Response::json($page_data);
+    //var_dump($page_data);
+    return Response::json($page_data);
 });
 
 function csv_count($fileName) {

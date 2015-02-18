@@ -38,14 +38,13 @@ class AuthController extends Controller {
 	}
     
 	public function getLogin()
-	{
-        var_dump("Shit!");
+	{ 
 		return view('auth.login');
 	}
 
     public function postAuthenticate(Request $request)
     {
-        if (Auth::attempt($request->only('email', 'password')))
+        if ($this->auth->attempt($request->only('email', 'password')))
         {
             return redirect()->intended('/getstarted');
         }
@@ -55,6 +54,24 @@ class AuthController extends Controller {
 	{
 		$this->auth->logout();
 		return redirect('/auth/login');
+	}
+
+	public function postRegister(Request $request)
+	{
+        var_dump($this->registrar);
+        var_dump($request->all());
+        /*
+		if ($validator->fails())
+		{
+			$this->throwValidationException(
+				$request, $validator
+			);
+		}
+
+		$this->auth->login($this->registrar->create($request->all()));
+
+		return redirect($this->redirectPath());
+        */
 	}
 
 }
