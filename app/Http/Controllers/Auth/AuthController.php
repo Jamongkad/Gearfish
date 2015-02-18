@@ -58,9 +58,11 @@ class AuthController extends Controller {
 
 	public function postRegister(Request $request)
 	{
-        var_dump($this->registrar);
-        var_dump($request->all());
-        /*
+        //var_dump($this->registrar);
+        //var_dump($request->all());
+
+		$validator = $this->registrar->validator($request->all());
+
 		if ($validator->fails())
 		{
 			$this->throwValidationException(
@@ -70,8 +72,8 @@ class AuthController extends Controller {
 
 		$this->auth->login($this->registrar->create($request->all()));
 
-		return redirect($this->redirectPath());
-        */
+		return redirect('/getstarted');
+
 	}
 
 }
