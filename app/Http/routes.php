@@ -119,42 +119,45 @@ Route::get('/createkey', function()
 
 Route::get('/api/{id}', function($id)
 {	
-    $limit = (Input::get('limit')) ? (int)Input::get('limit') : 100;
-    $data = DB::table('Uploads')->where('id', '=', $id)->first();
-    
-    $config = new lexerconfig();
-    $lexer = new lexer($config);
+    $apikey = Input::get('apikey');
+    if($apikey) { 
+        $limit = (Input::get('limit')) ? (int)Input::get('limit') : 100;
+        $data = DB::table('Uploads')->where('id', '=', $id)->first();
+        
+        $config = new lexerconfig();
+        $lexer = new lexer($config);
 
-    $interpreter = new interpreter();
-    $interpreter->unstrict(); // ignore row column count consistency
-    $collection = array();
+        $interpreter = new interpreter();
+        $interpreter->unstrict(); // ignore row column count consistency
+        $collection = array();
 
-    $interpreter->addobserver(function(array $columns) use(&$collection) {
-        $collection[] = $columns;
-    });
+        $interpreter->addobserver(function(array $columns) use(&$collection) {
+            $collection[] = $columns;
+        });
 
-    $csv = 'uploads/'.$data->name;
-    $lexer->parse($csv, $interpreter);
+        $csv = 'uploads/'.$data->name;
+        $lexer->parse($csv, $interpreter);
 
-    $paginator = new Paginator($collection, $limit, Input::get('page'));
-    $data = $paginator->toArray();
+        $paginator = new Paginator($collection, $limit, Input::get('page'));
+        $data = $paginator->toArray();
 
-    $offset = (Input::get('page')) ? $data['to'] : 0;
-    $page_data = [
-        'limit' => $limit,
-        'total_pages' => ceil(count($collection) / $limit) - 1,
-        'paging' => [ 
-            'per_page' => $data['per_page'],
-            'prev_page' => (Input::get('page')) ? $paginator->currentPage() - 1 : 0,
-            'next_page' => (Input::get('page')) ? $paginator->currentPage() + 1 : 1,
-        ],
-        'from' => $data['from'],
-        'to' => $data['to'],
-        'data' => array_slice($collection, $offset, $limit)//$paginator->paginate($limit)->toArray()['data']
-    ];
-    
-    //var_dump($page_data);
-    return Response::json($page_data);
+        $offset = (Input::get('page')) ? $data['to'] : 0;
+        $page_data = [
+            'limit' => $limit,
+            'total_pages' => ceil(count($collection) / $limit) - 1,
+            'paging' => [ 
+                'per_page' => $data['per_page'],
+                'prev_page' => (Input::get('page')) ? $paginator->currentPage() - 1 : 0,
+                'next_page' => (Input::get('page')) ? $paginator->currentPage() + 1 : 1,
+            ],
+            'from' => $data['from'],
+            'to' => $data['to'],
+            'data' => array_slice($collection, $offset, $limit)//$paginator->paginate($limit)->toArray()['data']
+        ];
+        
+        //var_dump($page_data);
+        return Response::json($page_data);
+    }
 });
 
 function csv_count($fileName) {

@@ -18,7 +18,7 @@ $(function() {
                             <td>Endpoint</td>
                             <td>
                                 <span style="color:#ccc">
-                                    <a target="_blank" href="/api/cnaihzr8?apikey=naXXzCxA5eYoLFT5diYMzwH5TvoeqCtU">json</a>
+                                    <a target="_blank" href="/api/<?php echo $upload_data->id?>?page=0&apikey=<?php echo $upload_data->key?>">json</a>
                                 </span>
                             </td>
                         </tr>
