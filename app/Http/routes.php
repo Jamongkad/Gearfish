@@ -51,7 +51,7 @@ Route::get('/docs', ['middleware' => 'auth', function()
 
 Route::get('/myapi', ['middleware' => 'auth', function()
 {	
-    $csv = DB::table('Uploads')->where('companyID', '=', Auth::user()->id)->get();
+    $csv = DB::table('Uploads')->where('companyID', '=', Auth::user()->id)->orderBy('created_at', 'desc')->get();
 	return View::make('myapi', ['csv' => $csv]);
 }]);
 
@@ -83,7 +83,8 @@ Route::post('/plupload', function() {
             ['companyID' => $companyID, 'key' => $api_key, 'uploadID' => $id, 'name' => $fileName]
         );
          
-        return 'ready';
+        //return 'ready';
+        return Response::json(['status' => 'ready']);
     });  
 });
 

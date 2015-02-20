@@ -64,6 +64,9 @@
 
     uploader.bind('UploadComplete', function(up, file) {
 
+        console.log(file);
+        console.log(up);
+
         var file = file;
  
         $('.progress-bar').fadeOut(2000, function() {
@@ -71,17 +74,8 @@
 
             $(this).hide().removeAttr('style').text('');
             $('#file_name').text(file[0].name + " successfully uploaded!").fadeOut(2000);
-            window.location = '/upload_success';     
-            /*
-            $.ajax({
-                type: "POST",
-                url: "/add_csv",
-                data: { 'filename': filename },
-                success: function() {
-                    window.location = '/myapi';     
-                }
-            });
-            */
+            //window.location = '/upload_success';     
+            window.location = '/myapi';
         });
 
     });

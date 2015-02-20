@@ -7,6 +7,7 @@ $(function() {
 <div class="row"> 
     <div class="col-lg-12">
         <h2>
+            <i class="fa fa-file-excel-o"></i>
             <span ng-hide="renamingApi" class="ng-binding"><?php echo $upload_data->name?></span>
         </h2>
         <div class="row">

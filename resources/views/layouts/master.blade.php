@@ -73,12 +73,14 @@
                                 My API's
                             </a>
                         </li>
+                        <!--
                         <li>
                             <a href="/docs">
                                 <i class="fa fa-book"></i>
                                 Documentation
                             </a>
                         </li>
+                        -->
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li>
