@@ -53,20 +53,22 @@
                                 <i class="fa fa-dot-circle-o"></i>
                                 API Keys
                             </a>
-                        </li>
+                        </li>                        
+                       
                         <li>
                             <a href="/usage">
                                 <i class="fa fa-ioxhost"></i>
                                 Usage
                             </a>
                         </li>
-
+                        <!--
                         <li> 
                             <a href="/billing">
                                 <i class="fa fa-usd"></i>
                                 Billing
                             </a>
                         </li>
+                        -->
                         <li> 
                             <a href="/myapi">
                                 <i class="fa fa-cloud-upload"></i>

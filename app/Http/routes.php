@@ -36,7 +36,8 @@ Route::get('/apikey', ['middleware' => 'auth', function()
 
 Route::get('/usage', ['middleware' => 'auth', function()
 {	
-	return View::make('usage');
+    $calendar = new Solution10\Calendar\Calendar(new DateTime('now'));
+	return View::make('usage', ['calendar' => $calendar]);
 }]);
 
 Route::get('/billing', ['middleware' => 'auth', function()
@@ -122,7 +123,7 @@ Route::get('/api/{id}', function($id)
     $apikey = Input::get('apikey');
     if($apikey) { 
         $limit = (Input::get('limit')) ? (int)Input::get('limit') : 100;
-        $data = DB::table('Uploads')->where('id', '=', $id)->first();
+        $csvUpload = DB::table('Uploads')->where('id', '=', $id)->first();
         
         $config = new lexerconfig();
         $lexer = new lexer($config);
@@ -135,8 +136,9 @@ Route::get('/api/{id}', function($id)
             $collection[] = $columns;
         });
 
-        $csv = 'uploads/'.$data->name;
+        $csv = 'uploads/'.$csvUpload->name;
         $lexer->parse($csv, $interpreter);
+        
 
         $paginator = new Paginator($collection, $limit, Input::get('page'));
         $data = $paginator->toArray();
@@ -155,7 +157,7 @@ Route::get('/api/{id}', function($id)
             'data' => array_slice($collection, $offset, $limit)//$paginator->paginate($limit)->toArray()['data']
         ];
         
-        //var_dump($page_data);
+        //var_dump($collection);
         return Response::json($page_data);
     }
 });
