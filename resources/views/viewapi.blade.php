@@ -18,7 +18,7 @@ $(function() {
                             <td>Endpoint</td>
                             <td>
                                 <span style="color:#ccc">
-                                    <a target="_blank" href="/api/<?php echo $upload_data->id?>?page=0&apikey=<?php echo $upload_data->key?>">json</a>
+                                    <a target="_blank" href="/api/<?php echo $upload_data->id?>?page=1&apikey=<?php echo $upload_data->key?>">json</a>
                                 </span>
                             </td>
                         </tr>
@@ -46,7 +46,7 @@ $(function() {
                     <pre style="color:#c7254e"><code class="api-key"><?php echo $upload_data->key?></code></pre>
                 </div>
                 <h3>Code Sample</h3>
-                <pre><code>curl --include --request GET "https://www.gearfish.com/api/<?php echo $upload_data->id?>?page=0&apikey=<span class="api-key-id"><?php echo $upload_data->key?></span>"</code></pre>
+                <pre><code>curl --include --request GET "https://www.gearfish.com/api/<?php echo $upload_data->id?>?page=1&apikey=<span class="api-key-id"><?php echo $upload_data->key?></span>"</code></pre>
             </div>
         </div>
     </div>

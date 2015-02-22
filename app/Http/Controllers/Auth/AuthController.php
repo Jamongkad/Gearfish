@@ -47,6 +47,8 @@ class AuthController extends Controller {
         if ($this->auth->attempt($request->only('email', 'password')))
         {
             return redirect()->intended('/getstarted');
+        } else { 
+            return redirect('/auth/login');
         }
     }
 
@@ -60,7 +62,6 @@ class AuthController extends Controller {
 	{
         //var_dump($this->registrar);
         //var_dump($request->all());
-
 		$validator = $this->registrar->validator($request->all());
 
 		if ($validator->fails())

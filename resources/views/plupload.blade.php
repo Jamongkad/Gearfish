@@ -64,9 +64,6 @@
 
     uploader.bind('UploadComplete', function(up, file) {
 
-        console.log(file);
-        console.log(up);
-
         var file = file;
  
         $('.progress-bar').fadeOut(2000, function() {

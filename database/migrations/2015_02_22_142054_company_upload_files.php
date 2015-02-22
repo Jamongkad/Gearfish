@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UploadsTable extends Migration {
+class CompanyUploadFiles extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,14 +12,14 @@ class UploadsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('Uploads', function(Blueprint $table)
+		//
+		Schema::create('CompanyUploadFiles', function(Blueprint $table)
 		{
-			//
             $table->engine = "InnoDB";
 			$table->increments('id');
+            $table->integer('uploadID')->unsigned();
             $table->integer('companyID')->unsigned();
-            $table->string('name', 250);
-            $table->integer('records');
+			$table->string('name', 250);	
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 		});
 	}
@@ -31,7 +31,8 @@ class UploadsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('Uploads');
+		//
+		Schema::drop('CompanyUploadFiles');
 	}
 
 }

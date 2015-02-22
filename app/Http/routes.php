@@ -72,19 +72,26 @@ Route::post('/plupload', function() {
         $companyID = Auth::user()->id;
 
         $extension = $file->getClientOriginalExtension(); // getting csv extension
-        $fileName = rand(11111,99999).'.'.$extension; // renameing csv
-        $file->move('uploads', $fileName);
+        $fileNumber = rand(11111, 99999);
+        $fileUploadDirectory = 'uploads/'.$fileNumber;
+        $fileName = $fileNumber.'.'.$extension; // renameing csv
 
-        $id = DB::table('Uploads')->insertGetId(
-            ['companyID' => $companyID, 'name' => $fileName, 'records' => csv_count($fileName)]
+        if (!file_exists($fileUploadDirectory)) {
+            mkdir($fileUploadDirectory, 0777, true);
+        }
+
+        $file->move($fileUploadDirectory, $fileName);
+
+        $uploadID = DB::table('Uploads')->insertGetId(
+            ['companyID' => $companyID, 'name' => $fileName, 'records' => csv_count($fileUploadDirectory.'/'.$fileName)]
         );
 
         $api_key = hash('sha256', (time() . $companyID . Config::get('app.key') . rand()));
         DB::table('CompanyApiKeys')->insert(
-            ['companyID' => $companyID, 'key' => $api_key, 'uploadID' => $id, 'name' => $fileName]
+            ['companyID' => $companyID, 'key' => $api_key, 'uploadID' => $uploadID, 'name' => $fileName]
         );
          
-        //return 'ready';
+        csv_split_file($fileName, $fileUploadDirectory, $uploadID, $companyID);
         return Response::json(['status' => 'ready']);
     });  
 });
@@ -118,47 +125,68 @@ Route::get('/createkey', function()
     return View::make('createkey', ['companyID' => $companyID]);
 });
 
+Route::get('/read_dir/{id}', function($id) 
+{   
+    $csvUpload = DB::table('Uploads')->where('id', '=', $id)->first();
+    $folderName = str_replace('.csv', '', $csvUpload->name);
+    $scanned_directory = array_diff(scandir('uploads/'.$folderName, SCANDIR_SORT_ASCENDING), array('..', '.'));
+    var_dump($scanned_directory);
+});
+
 Route::get('/api/{id}', function($id)
 {	
     $apikey = Input::get('apikey');
     if($apikey) { 
-        $limit = (Input::get('limit')) ? (int)Input::get('limit') : 100;
-        $csvUpload = DB::table('Uploads')->where('id', '=', $id)->first();
-        
+ 
+        $csvUploadsPageCount = DB::table('CompanyUploadFiles')->where('uploadID', '=', $id)->count();
+        $csvUploads = DB::table('CompanyUploadFiles')
+                      ->select('CompanyUploadFiles.name as childFile', 
+                               'Uploads.name as parentFile',
+                               'Uploads.records')
+                      ->join('Uploads', 'Uploads.id', '=', 'CompanyUploadFiles.uploadID') 
+                      ->where('CompanyUploadFiles.uploadID', '=', $id)
+                      ->where('Uploads.id', '=', $id)
+                      ->limit(1)->offset(Input::get('page') - 1)->first();
+
         $config = new lexerconfig();
         $lexer = new lexer($config);
-
         $interpreter = new interpreter();
         $interpreter->unstrict(); // ignore row column count consistency
-        $collection = array();
 
+        $collection = array();
         $interpreter->addobserver(function(array $columns) use(&$collection) {
             $collection[] = $columns;
         });
-
-        $csv = 'uploads/'.$csvUpload->name;
-        $lexer->parse($csv, $interpreter);
         
+        if($csvUploads) {
+            
+            $folderName = str_replace('.csv', '', $csvUploads->parentFile);
+            $csv = 'uploads/'.$folderName.'/'.$csvUploads->childFile.'.csv';
+            $lexer->parse($csv, $interpreter);
+            
+            /*
+            var_dump($csvUploads);
+            var_dump($csvUploadsPageCount);
+            var_dump($collection);
+            */
 
-        $paginator = new Paginator($collection, $limit, Input::get('page'));
-        $data = $paginator->toArray();
+            $page_data = [
+                'total_pages' => $csvUploadsPageCount,
+                'paging' => [ 
+                    'prev_page' => (Input::get('page')) ? Input::get('page') - 1 : 0,
+                    'next_page' => (Input::get('page')) ? (Input::get('page') == $csvUploadsPageCount) ? null : Input::get('page') + 1 : 1,
+                ],
+                'data' => $collection 
+            ];
 
-        $offset = (Input::get('page')) ? $data['to'] : 0;
-        $page_data = [
-            'limit' => $limit,
-            'total_pages' => ceil(count($collection) / $limit) - 1,
-            'paging' => [ 
-                'per_page' => $data['per_page'],
-                'prev_page' => (Input::get('page')) ? $paginator->currentPage() - 1 : 0,
-                'next_page' => (Input::get('page')) ? $paginator->currentPage() + 1 : 1,
-            ],
-            'from' => $data['from'],
-            'to' => $data['to'],
-            'data' => array_slice($collection, $offset, $limit)//$paginator->paginate($limit)->toArray()['data']
-        ];
+            var_dump($page_data);
+        } else {
+            var_dump("Nothing");
+        }
         
-        //var_dump($collection);
+        /*
         return Response::json($page_data);
+        */
     }
 });
 
@@ -174,13 +202,35 @@ function csv_count($fileName) {
     $interpreter->addobserver(function(array $columns) use(&$collection) {
         $collection[] = $columns;
     });
-
-    $csv = 'uploads/'.$fileName;
-    $lexer->parse($csv, $interpreter);
+    $lexer->parse($fileName, $interpreter);
 
     return count($collection);
 }
 
+function csv_split_file($fileName, $fileUploadDirectory, $uploadID, $companyID) {
+    $outputFile = 'output';
+    $splitSize = 10000;
+    
+    $in = fopen($fileUploadDirectory.'/'.$fileName, 'r');
+
+    $rowCount = 0;
+    $fileCount = 1;
+    while (!feof($in)) {
+        if (($rowCount % $splitSize) == 0) {
+            if ($rowCount > 0) {
+                fclose($out);
+            }
+            $outputFileName = $outputFile . $fileCount++;
+            DB::table('CompanyUploadFiles')->insert(['uploadID' => $uploadID, 'companyID' => $companyID, 'name' => $outputFileName]);
+            $out = fopen($fileUploadDirectory . '/' . $outputFileName . '.csv', 'w');
+        }
+        $data = fgetcsv($in);
+        if ($data)
+            fputcsv($out, $data);
+        $rowCount++;
+    }
+    fclose($out);    
+}
 
 Route::controllers([
 	'auth' => 'Auth\AuthController',
