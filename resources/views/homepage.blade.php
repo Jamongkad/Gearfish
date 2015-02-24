@@ -28,6 +28,10 @@
         </div>
     </div>
     <div class="col-md-12">
+        <div class="text-center">
+            <h2>Simple REST</h2>
+            <p>Use our simple RESTful API to integrate Gearfish into your app.</p>
+        </div>
         <pre class="terminal col-center-block">$ curl "https://dev.gearfish.com/api/9?page=1&apikey=1030946d60ecc6d634dee00171c9"
 {"total_pages":17,
  "paging":{
