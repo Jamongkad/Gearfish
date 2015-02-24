@@ -57,13 +57,12 @@ h2 > .btn:hover {
     white-space: pre-wrap;
 }
 */
-.terminal .contents { 
+pre.terminal {
     background-color: #111;
     color: #fff;
     font: 14px "Monaco", monospace;
-    overflow: auto
-    line-height: 21px
-    width: 100%;
+    overflow: auto;
+    line-height: 21px;
+    width: 825px;
     height: 100%;
-    white-space: pre-wrap
 }
