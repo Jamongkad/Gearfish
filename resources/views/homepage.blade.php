@@ -13,7 +13,8 @@
             <p>Need to convert that large csv file for marketing this week?</p>
             <p>Client has a 250,000 row file that needs to be encoded in your RDBMS?</p>
             <p>Don't waste your time coding up yet another CSV reader in your app.</p>
-            <p><a href="/auth/register" class="btn btn-lg btn-primary">Get Started</a></p>
+            <br/>
+            <p><a href="/auth/register" class="btn btn-lg btn-primary" style="width:500px">Get Started</a></p>
         </div>
     </div>
     <div class="col-md-12">

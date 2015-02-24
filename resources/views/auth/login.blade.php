@@ -49,8 +49,10 @@
 								<button type="submit" class="btn btn-primary" style="margin-right: 15px;">
 									Login
 								</button>
-
-								<a href="/password/email">Forgot Your Password?</a>
+								<!--<a href="/password/email">Forgot Your Password?</a>-->
+                                <br/>
+                                <br/>
+								<a href="/auth/register">Don't have an account? Sign up here!</a>
 							</div>
 						</div>
 					</form>
