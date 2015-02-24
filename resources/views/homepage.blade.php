@@ -34,7 +34,7 @@
             <h2>Simple Integration</h2>
             <p>Use our simple RESTful API to integrate Gearfish into your app.</p>
         </div>
-        <pre class="terminal col-center-block">$ curl "https://dev.gearfish.com/api/9?page=1&apikey=1030946d60ecc6d634dee00171c9"
+        <pre class="terminal col-center-block">$ curl "http://dev.gearfish.com/api/9?page=1&apikey=1030946d60ecc6d634dee00171c9"
 {"total_pages":17,
  "paging":{
      "prev_page":null,
