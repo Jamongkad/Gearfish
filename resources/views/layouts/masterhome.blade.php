@@ -16,6 +16,27 @@
         <link rel="stylesheet" href="{{ asset('assets/font-awesome-4.1.0/css/font-awesome.min.css') }}">
     </head>
     <body>
+        <div class="navbar navbar-default navbar-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="<?php echo (Auth::check()) ? '/getstarted' : '/'?>">Gearfish</a>
+                </div>
+                <div id="navbar-main" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="/"> 
+                                Home
+                            </a>
+                        </li>  
+                        <li>
+                            <a href="/contact">
+                                Contact
+                            </a>
+                        </li>
+                    </ul> 
+                </div>
+            </div>
+        </div>
         <div class="container">
             @yield("content")
         </div>

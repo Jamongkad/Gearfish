@@ -5,3 +5,65 @@ h2 > .btn {
 h2 > .btn:hover {
     margin-top: 17.5px;
 }
+
+#banner {
+    background-attachment: scroll;
+    padding: 10em 0;
+}
+
+#banner {
+    background-attachment: cover, fixed;
+    background-color: #494d53;
+    background-image: url("../img/overlay.png"), url("../img/banner.png");
+    background-position: left top, center center;
+    background-repeat: repeat, no-repeat;
+    background-size: auto auto, cover;
+    color: #d1d2d4;
+    padding: 10em 0;
+    position: relative;
+    text-align: center;
+}
+
+#banner:after {
+    background: none repeat scroll 0 0 #3d4045;
+    content: "";
+    height: 100%;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    transition: opacity 2s ease-in-out 0s;
+    width: 100%;
+    z-index: 1;
+}
+
+.col-center-block {
+    float: none;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+/*
+.terminal .contents {
+    background-color: #111;
+    color: #fff;
+    font-family: "Courier New",monospace;
+    font-size: 0.9em;
+    height: 350px;
+    line-height: 1.75em;
+    margin: 0 0 2em;
+    overflow: auto;
+    padding: 1em 1.5em;
+    white-space: pre-wrap;
+}
+*/
+.terminal .contents { 
+    background-color: #111;
+    color: #fff;
+    font: 14px "Monaco", monospace;
+    overflow: auto
+    line-height: 21px
+    width: 100%;
+    height: 100%;
+    white-space: pre-wrap
+}
