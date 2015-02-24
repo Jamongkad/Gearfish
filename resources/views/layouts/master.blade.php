@@ -54,14 +54,13 @@
                                 API Keys
                             </a>
                         </li>                        
-                       
+                        <!--
                         <li>
                             <a href="/usage">
                                 <i class="fa fa-ioxhost"></i>
                                 Usage
                             </a>
                         </li>
-                        <!--
                         <li> 
                             <a href="/billing">
                                 <i class="fa fa-usd"></i>
