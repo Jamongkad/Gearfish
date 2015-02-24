@@ -179,17 +179,12 @@ Route::get('/api/{id}', function($id)
                     ],
                     'data' => $collection 
                 ];
-
-                var_dump($page_data); 
+                return Response::json($page_data);
             }
 
-        } else {
-            var_dump("Nothing");
-        }
-        
-        /*
-        return Response::json($page_data);
-        */
+        } else { 
+            return Response::json('Nothing');
+        } 
     }
 });
 
