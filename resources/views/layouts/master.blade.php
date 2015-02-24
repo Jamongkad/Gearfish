@@ -86,7 +86,7 @@
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a target="_blank" href="http://builtwithbootstrap.com/"> 
+                            <a href="/settings"> 
                                 <i class="fa fa-gear"></i>
                                 Settings
                             </a>

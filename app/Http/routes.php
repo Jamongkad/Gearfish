@@ -158,28 +158,31 @@ Route::get('/api/{id}', function($id)
             $collection[] = $columns;
         });
         
-        if($csvUploads) {
+        if(Input::get('page') != 0) {
             
-            $folderName = str_replace('.csv', '', $csvUploads->parentFile);
-            $csv = 'uploads/'.$folderName.'/'.$csvUploads->childFile.'.csv';
-            $lexer->parse($csv, $interpreter);
-            
-            /*
-            var_dump($csvUploads);
-            var_dump($csvUploadsPageCount);
-            var_dump($collection);
-            */
+            if($csvUploads) {
+                $folderName = str_replace('.csv', '', $csvUploads->parentFile);
+                $csv = 'uploads/'.$folderName.'/'.$csvUploads->childFile.'.csv';
+                $lexer->parse($csv, $interpreter);
+                
+                /*
+                var_dump($csvUploads);
+                var_dump($csvUploadsPageCount);
+                var_dump($collection);
+                */
 
-            $page_data = [
-                'total_pages' => $csvUploadsPageCount,
-                'paging' => [ 
-                    'prev_page' => (Input::get('page')) ? Input::get('page') - 1 : 0,
-                    'next_page' => (Input::get('page')) ? (Input::get('page') == $csvUploadsPageCount) ? null : Input::get('page') + 1 : 1,
-                ],
-                'data' => $collection 
-            ];
+                $page_data = [
+                    'total_pages' => $csvUploadsPageCount,
+                    'paging' => [ 
+                        'prev_page' => (Input::get('page')) ? (Input::get('page') == 1) ? null : Input::get('page') - 1 : 0,
+                        'next_page' => (Input::get('page')) ? ((Input::get('page') == $csvUploadsPageCount) ? null : Input::get('page') + 1) : 1,
+                    ],
+                    'data' => $collection 
+                ];
 
-            var_dump($page_data);
+                var_dump($page_data); 
+            }
+
         } else {
             var_dump("Nothing");
         }
