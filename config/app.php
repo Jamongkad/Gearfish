@@ -145,7 +145,7 @@ return [
 		'App\Providers\EventServiceProvider',
 		'App\Providers\RouteServiceProvider',
         'JildertMiedema\LaravelPlupload\LaravelPluploadServiceProvider',
-        'Barryvdh\Debugbar\ServiceProvider',
+        //'Barryvdh\Debugbar\ServiceProvider',
 	],
 
 	/*
