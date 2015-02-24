@@ -72,7 +72,7 @@
             $(this).hide().removeAttr('style').text('');
             $('#file_name').text(file[0].name + " successfully uploaded!").fadeOut(2000);
             //window.location = '/upload_success';     
-            window.location = '/myapi';
+            //window.location = '/myapi';
         });
 
     });
