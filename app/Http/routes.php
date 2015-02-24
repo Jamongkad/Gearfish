@@ -83,7 +83,7 @@ Route::post('/plupload', function() {
         $file->move($fileUploadDirectory, $fileName);
 
         $uploadID = DB::table('Uploads')->insertGetId(
-            ['companyID' => $companyID, 'name' => $fileName, 'records' => /*csv_count($fileUploadDirectory.'/'.$fileName)*/0]
+            ['companyID' => $companyID, 'name' => $fileName, 'records' => csv_count($fileUploadDirectory.'/'.$fileName)]
         );
 
         $api_key = hash('sha256', (time() . $companyID . Config::get('app.key') . rand()));
@@ -123,14 +123,6 @@ Route::get('/createkey', function()
 {
     $companyID = 1;
     return View::make('createkey', ['companyID' => $companyID]);
-});
-
-Route::get('/read_dir/{id}', function($id) 
-{   
-    $csvUpload = DB::table('Uploads')->where('id', '=', $id)->first();
-    $folderName = str_replace('.csv', '', $csvUpload->name);
-    $scanned_directory = array_diff(scandir('uploads/'.$folderName, SCANDIR_SORT_ASCENDING), array('..', '.'));
-    var_dump($scanned_directory);
 });
 
 Route::get('/api/{id}', function($id)
@@ -189,20 +181,16 @@ Route::get('/api/{id}', function($id)
 });
 
 function csv_count($fileName) {
-    
-    $config = new lexerconfig();
-    $lexer = new lexer($config);
-
-    $interpreter = new interpreter();
-    $interpreter->unstrict(); // ignore row column count consistency
-
-    $collection = Array();
-    $interpreter->addobserver(function(array $columns) use(&$collection) {
-        $collection[] = $columns;
-    });
-    $lexer->parse($fileName, $interpreter);
-
-    return count($collection);
+    $c = 0;
+    $fp = fopen($fileName, "r");
+    if($fp){
+        while(!feof($fp)) {
+          $content = fgets($fp);
+          if($content) $c++;
+        }
+    }
+    fclose($fp);
+    return $c; 
 }
 
 function csv_split_file($fileName, $fileUploadDirectory, $uploadID, $companyID) {
