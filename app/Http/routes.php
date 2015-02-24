@@ -83,7 +83,7 @@ Route::post('/plupload', function() {
         $file->move($fileUploadDirectory, $fileName);
 
         $uploadID = DB::table('Uploads')->insertGetId(
-            ['companyID' => $companyID, 'name' => $fileName, 'records' => csv_count($fileUploadDirectory.'/'.$fileName)]
+            ['companyID' => $companyID, 'name' => $fileName, 'records' => /*csv_count($fileUploadDirectory.'/'.$fileName)*/0]
         );
 
         $api_key = hash('sha256', (time() . $companyID . Config::get('app.key') . rand()));
