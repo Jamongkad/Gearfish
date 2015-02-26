@@ -12,10 +12,12 @@
 
         <div class="well bs-component">
             <p class="info">
-                Do you want to upload your csv and integrate our REST API in your app? Head on over My API's and we'll take care of the rest!
+                Do you want to upload your csv and integrate our REST API in your app? Create an API key then head on over My API's and we'll take care of the rest!
             </p>
             <div class="text-center">
-            <a href="/myapi" class="btn btn-lg btn-info">My API's</a>
+                <a href="/apikey" class="btn btn-lg btn-warning">Create your API key</a>
+                &nbsp;
+                <a href="/myapi" class="btn btn-lg btn-info">Check out your API's</a>
             </div>
         </div>
     </div>

@@ -15,15 +15,17 @@
                 We accept lists formatted as a CSV file. 
                 The filesize can be up to 1 GB. For fastest processing time, we suggest that you remove unrelated columns.
             </p>
-            <div id="current-container" style="float:left">
-                <button type="button" id="current-browse-button" class="btn btn-primary">Browse...</button>
-                <button type="button" id="current-start-upload" class="btn btn-success">Upload</button>
-            </div>
-            <div id="file_name" style="float:left;padding-left:10px;padding-top:7px"></div>
-            <br/>
-            <br/>
-            <div class="progress">
-                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            <div class="form-group">
+                <div id="current-container" style="float:left">
+                    <button type="button" id="current-browse-button" class="btn btn-primary">Browse...</button>
+                    <button type="button" id="current-start-upload" class="btn btn-success">Upload</button>
+                </div>
+                <div id="file_name" style="float:left;padding-left:10px;padding-top:7px"></div>
+                <br/>
+                <br/>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    </div>
                 </div>
             </div>
         </div>
@@ -71,7 +73,6 @@
 
             $(this).hide().removeAttr('style').text('');
             $('#file_name').text(file[0].name + " successfully uploaded!").fadeOut(2000);
-            //window.location = '/upload_success';     
             window.location = '/myapi';
         });
 

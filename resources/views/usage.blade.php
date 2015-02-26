@@ -5,13 +5,12 @@
         <h2>
             <span class="fa-stack fa-lg">
                 <i class="fa fa-circle-o fa-stack-2x"></i>
-                <i class="fa fa-ioxhost fa-stack-1x"></i>
+                <i class="fa fa-flash fa-stack-1x"></i>
             </span>
             My Usage
         </h2>
        <?php
            $calendar->setResolution(new Solution10\Calendar\Resolution\MonthResolution());
-           // That's it! Let's grab the view data and render:
            $viewData = $calendar->viewData();
            $months = $viewData['contents'];
        ?>

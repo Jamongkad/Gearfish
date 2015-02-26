@@ -61,10 +61,10 @@ Route::get('/upload', ['middleware' => 'auth', function()
 	return View::make('plupload');
 }]);
 
-Route::get('/upload_success', ['middleware' => 'auth', function() 
-{
-   echo "Success";
-}]);
+Route::post('/attach_apikey', function() {
+    DB::table('Uploads')->where('id', '=', Input::get('api_id'))
+                        ->update(['apiID' => Input::get('apikey_id')]);
+});
 
 Route::post('/plupload', function() {
     return Plupload::receive('file', function ($file) {
@@ -74,7 +74,7 @@ Route::post('/plupload', function() {
         $extension = $file->getClientOriginalExtension(); // getting csv extension
         $fileNumber = rand(11111, 99999);
         $fileUploadDirectory = 'uploads/'.$fileNumber;
-        $fileName = $fileNumber.'.'.$extension; // renameing csv
+        $fileName = $fileNumber.'.'.$extension; // renaming csv
 
         if (!file_exists($fileUploadDirectory)) {
             mkdir($fileUploadDirectory, 0777, true);
@@ -84,13 +84,13 @@ Route::post('/plupload', function() {
 
         $uploadID = DB::table('Uploads')->insertGetId(
             ['companyID' => $companyID, 'name' => $fileName, 'records' => csv_count($fileUploadDirectory.'/'.$fileName)]
-        );
-
+        ); 
+        /*
         $api_key = hash('sha256', (time() . $companyID . Config::get('app.key') . rand()));
         DB::table('CompanyApiKeys')->insert(
             ['companyID' => $companyID, 'key' => $api_key, 'uploadID' => $uploadID, 'name' => $fileName]
         );
-         
+        */ 
         csv_split_file($fileName, $fileUploadDirectory, $uploadID, $companyID);
         return Response::json(['status' => 'ready']);
     });  
@@ -98,25 +98,44 @@ Route::post('/plupload', function() {
 
 Route::post('/createkey', function() 
 {
-    $companyID = Input::get('companyID');
+    $validator = Validator::make(Input::all(), [
+        'name' => 'required|min:3',
+    ]); 
+    
+    if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator->errors());
+    } else { 
+        $companyID = Input::get('companyID');
 
-    $api_key = hash('sha256', (time() . $companyID . Config::get('app.key') . rand()));
-    DB::table('CompanyApiKeys')->insert(
-        ['companyID' => $companyID, 'key' => $api_key, 'name' => Input::get('name')]
-    );
+        $api_key = hash('sha256', (time() . $companyID . Config::get('app.key') . rand()));
+        DB::table('CompanyApiKeys')->insert(
+            ['companyID' => $companyID, 'key' => $api_key, 'name' => Input::get('name')]
+        );
 
-    return Redirect::to('apikey');
+        return Redirect::to('apikey');
+    }
 });
 
 Route::get('/viewapi/{id}', ['middleware' => 'auth', function($id)
 {
     $companyID = Auth::user()->id;
-    $upload_data = DB::table('Uploads')->join('CompanyApiKeys', 'Uploads.id', '=', 'CompanyApiKeys.uploadID')
-                                       ->where('Uploads.companyID', '=', $companyID)
-                                       ->where('Uploads.id', '=', $id)
-                                       ->first();    
-
-    return View::make('viewapi', ['upload_data' => $upload_data]);
+    $apiKeys = DB::table('CompanyApiKeys')->where('companyID', '=', $companyID)->get();
+    $results = DB::select('
+    SELECT  
+        *, 
+        (SELECT COUNT(id) FROM CompanyUploadFiles WHERE CompanyUploadFiles.uploadID = ?) AS pages
+    FROM
+        Uploads
+    WHERE 1=1
+        AND Uploads.id = ?
+        AND Uploads.companyID = ?
+    LIMIT 1
+    ', [$id, $id, $companyID]);
+    $upload_data = $results ? array_pop($results) : null;
+    $chosenApiKey = DB::table('CompanyApiKeys')->where('companyID', '=', $companyID)
+                                                ->where('id', '=', $upload_data->apiID)
+                                                ->first();
+    return View::make('viewapi', ['upload_data' => $upload_data, 'apiKeys' => $apiKeys, 'chosenApiKey' => $chosenApiKey]);
 }]);
 
 Route::get('/createkey', function() 
@@ -128,8 +147,8 @@ Route::get('/createkey', function()
 Route::get('/api/{id}', function($id)
 {	
     $apikey = Input::get('apikey');
-    if($apikey) { 
- 
+    $apikeyCheck = DB::table('CompanyApiKeys')->where('key', '=', $apikey)->first();
+    if($apikeyCheck) {  
         $csvUploadsPageCount = DB::table('CompanyUploadFiles')->where('uploadID', '=', $id)->count();
         $csvUploads = DB::table('CompanyUploadFiles')
                       ->select('CompanyUploadFiles.name as childFile', 
@@ -156,12 +175,6 @@ Route::get('/api/{id}', function($id)
                 $folderName = str_replace('.csv', '', $csvUploads->parentFile);
                 $csv = 'uploads/'.$folderName.'/'.$csvUploads->childFile.'.csv';
                 $lexer->parse($csv, $interpreter);
-                
-                /*
-                var_dump($csvUploads);
-                var_dump($csvUploadsPageCount);
-                var_dump($collection);
-                */
 
                 $page_data = [
                     'total_pages' => $csvUploadsPageCount,
@@ -178,7 +191,18 @@ Route::get('/api/{id}', function($id)
             return Response::json('Nothing');
         } 
     }
+    /*
+    if($apikey) {
+    }
+    */
 });
+
+Route::get('/deletekey/{id}', function($id)
+{ 
+    DB::table('CompanyApiKeys')->where('id', '=', $id)->delete();
+    return Redirect::to('apikey');
+});
+
 
 function csv_count($fileName) {
     $c = 0;

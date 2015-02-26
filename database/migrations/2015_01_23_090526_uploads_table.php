@@ -18,6 +18,7 @@ class UploadsTable extends Migration {
             $table->engine = "InnoDB";
 			$table->increments('id');
             $table->integer('companyID')->unsigned();
+            $table->integer('apiID')->unsigned();
             $table->string('name', 250);
             $table->integer('records');
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));

@@ -12,6 +12,7 @@
             <div class="form-group">
                 <label for="name">Name</label>	
                 <input type="text" id="name" name="name" class="form-control">	
+                <?php echo $errors->first('name', '<p style="color:#d9534f">:message</p>');?>
                 <input type="hidden" name="companyID" value="<?php echo $companyID?>" />	
                 <p class="help-block">Enter a name for your API key so you can identify it later.</p>
             </div>

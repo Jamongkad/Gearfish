@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CompanyApiKeys extends Migration {
+class ApiUsageTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -13,15 +13,13 @@ class CompanyApiKeys extends Migration {
 	public function up()
 	{
 		//
-		Schema::create('CompanyApiKeys', function(Blueprint $table)
+		Schema::create('APIUsage', function(Blueprint $table)
 		{
-			//
             $table->engine = "InnoDB";
 			$table->increments('id');
+            $table->integer('uploadID')->unsigned();
             $table->integer('companyID')->unsigned();
-            //$table->integer('uploadID')->unsigned();
-            $table->text('key'); 
-            $table->string('name', 250); 
+			$table->integer('processed')->unsigned();	
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 		});
 	}
@@ -34,7 +32,7 @@ class CompanyApiKeys extends Migration {
 	public function down()
 	{
 		//
-		Schema::drop('CompanyApiKeys');
+		Schema::drop('APIUsage');
 	}
 
 }
