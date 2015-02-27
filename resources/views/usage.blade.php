@@ -39,11 +39,14 @@
                                 </td>
                                 <td>2,000</td>
                                 <td> 
+                                    <!--
                                     <?php foreach($usage as $us) :?>
                                         <?php if($us->date_created == $day->date()->format('Y-m-d')):?>
                                             <?php echo "$".number_format(($us->processed - 2000) * 0.001, 1); ?> 
                                         <?php endif;?>
                                     <?php endforeach ?>
+                                    -->
+                                    N/A
                                 </td>
                             </tr>
                         <?php endif; ?>
