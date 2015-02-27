@@ -36,8 +36,22 @@ Route::get('/apikey', ['middleware' => 'auth', function()
 
 Route::get('/usage', ['middleware' => 'auth', function()
 {	
+
     $calendar = new Solution10\Calendar\Calendar(new DateTime('now'));
-	return View::make('usage', ['calendar' => $calendar]);
+    $companyID = Auth::user()->id;
+    $usage = DB::select('
+        SELECT
+            uploadID,
+            companyID,
+            processed,
+            DATE_FORMAT(created_at, "%Y-%m-%d") AS date_created
+        FROM
+            APIUsage
+        WHERE 1=1
+            AND companyID = ?
+    ', [$companyID]);
+
+	return View::make('usage', ['calendar' => $calendar, 'usage' => $usage]);
 }]);
 
 Route::get('/billing', ['middleware' => 'auth', function()
@@ -70,7 +84,6 @@ Route::post('/plupload', function() {
     return Plupload::receive('file', function ($file) {
 
         $companyID = Auth::user()->id;
-
         $extension = $file->getClientOriginalExtension(); // getting csv extension
         $fileNumber = rand(11111, 99999);
         $fileUploadDirectory = 'uploads/'.$fileNumber;
@@ -140,7 +153,7 @@ Route::get('/viewapi/{id}', ['middleware' => 'auth', function($id)
 
 Route::get('/createkey', function() 
 {
-    $companyID = 1;
+    $companyID = Auth::user()->id;
     return View::make('createkey', ['companyID' => $companyID]);
 });
 
@@ -150,10 +163,12 @@ Route::get('/api/{id}', function($id)
     $apikeyCheck = DB::table('CompanyApiKeys')->where('key', '=', $apikey)->first();
     if($apikeyCheck) {  
         $csvUploadsPageCount = DB::table('CompanyUploadFiles')->where('uploadID', '=', $id)->count();
+
         $csvUploads = DB::table('CompanyUploadFiles')
                       ->select('CompanyUploadFiles.name as childFile', 
                                'Uploads.name as parentFile',
-                               'Uploads.records')
+                               'Uploads.records',
+                               'Uploads.companyID')
                       ->join('Uploads', 'Uploads.id', '=', 'CompanyUploadFiles.uploadID') 
                       ->where('CompanyUploadFiles.uploadID', '=', $id)
                       ->where('Uploads.id', '=', $id)
@@ -176,6 +191,8 @@ Route::get('/api/{id}', function($id)
                 $csv = 'uploads/'.$folderName.'/'.$csvUploads->childFile.'.csv';
                 $lexer->parse($csv, $interpreter);
 
+                upsert_api_usage($csvUploads->companyID, $id, count($collection));
+
                 $page_data = [
                     'total_pages' => $csvUploadsPageCount,
                     'paging' => [ 
@@ -191,10 +208,6 @@ Route::get('/api/{id}', function($id)
             return Response::json('Nothing');
         } 
     }
-    /*
-    if($apikey) {
-    }
-    */
 });
 
 Route::get('/deletekey/{id}', function($id)
@@ -203,6 +216,33 @@ Route::get('/deletekey/{id}', function($id)
     return Redirect::to('apikey');
 });
 
+function upsert_api_usage($companyID, $apiID, $collectionCount) {
+    $date = new DateTime('now');
+    $dateFormat = $date->format('Y-m-d');
+
+    $usageRecord = DB::select('
+        SELECT
+            uploadID,
+            companyID,
+            processed,
+            created_at
+        FROM
+            APIUsage
+        WHERE 1=1
+            AND companyID = ?
+            AND uploadID = ? 
+            AND DATE_FORMAT(created_at, "%Y-%m-%d") = ?
+    ', [$companyID, $apiID, $dateFormat]);
+    if(!$usageRecord) { 
+        DB::table('APIUsage')->insert(['uploadID' => $apiID, 'companyID' => $companyID, 'processed' => $collectionCount]);
+    } else {
+        DB::update('UPDATE APIUsage SET processed = processed + ?
+                    WHERE 1=1  
+                        AND companyID = ?
+                        AND uploadID = ?
+                        AND DATE_FORMAT(created_at, "%Y-%m-%d") = ?', [$collectionCount, $companyID, $apiID, $dateFormat]);     
+    }
+}
 
 function csv_count($fileName) {
     $c = 0;

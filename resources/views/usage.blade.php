@@ -14,25 +14,43 @@
            $viewData = $calendar->viewData();
            $months = $viewData['contents'];
        ?>
-       <?php foreach ($months as $month): ?>
-        <div>
-            <?php foreach ($month->weeks() as $week): ?>
-                <?php foreach ($week->days() as $day): ?>
-                <p>
-                        <?php
-                            if ($day->isOverflow()) {
-                                if ($calendar->resolution()->showOverflowDays()) {
-                                    echo '<span style="color: #ccc">'.$day->date()->format('d').'</span>';
-                                }   
-                            } else {
-                                echo $day->date()->format('M d, Y');
-                            }
-                        ?>
-                </p>
+       <table class="table">
+           <tr> 
+               <th></th>
+               <th>Usage</th>
+               <th>Free Tier</th>
+               <th>Cost</th>
+           </tr>
+           <?php foreach ($months as $month): ?>
+                <?php foreach ($month->weeks() as $week): ?>
+                    <?php foreach ($week->days() as $day): ?>
+                        <?php if(!$day->isOverflow()): ?>
+                            <tr class="<?php 
+                                     $date = new DateTime('now');
+                                     $dateFormat = $date->format('Y-m-d');
+                                     echo ($day->date()->format('Y-m-d') == $dateFormat) ? "success" : null?>">
+                                <td><?php echo $day->date()->format('Y-m-d'); ?></td>
+                                <td>
+                                    <?php foreach($usage as $us) :?>
+                                        <?php if($us->date_created == $day->date()->format('Y-m-d')):?>
+                                            <?php echo number_format($us->processed); ?> 
+                                        <?php endif;?>
+                                    <?php endforeach ?>
+                                </td>
+                                <td>2,000</td>
+                                <td> 
+                                    <?php foreach($usage as $us) :?>
+                                        <?php if($us->date_created == $day->date()->format('Y-m-d')):?>
+                                            <?php echo "$".number_format(($us->processed - 2000) * 0.001, 1); ?> 
+                                        <?php endif;?>
+                                    <?php endforeach ?>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
                 <?php endforeach; ?>
             <?php endforeach; ?>
-        </div>
-        <?php endforeach; ?>
+        </table>
     </div>
 </div>
 @stop
