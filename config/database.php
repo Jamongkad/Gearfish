@@ -57,7 +57,7 @@ return [
 			'host'      => 'localhost',
 			'database'  => 'confabulator',
 			'username'  => 'mathew',
-			'password'  => 'brx4*svvp455w0rd',
+			'password'  => 'brx4*svv',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',
